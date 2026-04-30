@@ -1,0 +1,1054 @@
++
+  ( a b -- n )
+  Adds a and b.
+
+-
+  ( a b -- n )
+  Subtracts b from a.
+
+*
+  ( a b -- n )
+  Multiplies a and b.
+
+/
+  ( a b -- n )
+  Divides a by b. Integer division, truncates toward zero.
+
+mod
+  ( a b -- n )
+  Remainder of a divided by b. Result has same sign as a.
+
+/mod
+  ( a b -- rem quot )
+  Divides a by b, leaving remainder then quotient.
+  Example: 7 3 /mod . .  => 2 1
+
+*/
+  ( a b c -- n )
+  Multiplies a by b then divides by c using a 64-bit intermediate.
+  More accurate than (a * b) / c for large numbers.
+  Example: 3 4 6 */  => 2
+
+*/mod
+  ( a b c -- rem quot )
+  Multiplies a by b then divides by c, leaving remainder then quotient.
+  Uses 64-bit intermediate like */.
+
+negate
+  ( n -- -n )
+  Negates n. Equivalent to 0 swap -.
+
+abs
+  ( n -- |n| )
+  Returns the absolute value of n.
+
+min
+  ( a b -- n )
+  Returns the smaller of a and b.
+
+max
+  ( a b -- n )
+  Returns the larger of a and b.
+
+1+
+  ( n -- n+1 )
+  Adds 1.
+
+1-
+  ( n -- n-1 )
+  Subtracts 1.
+
+2*
+  ( n -- n*2 )
+  Multiplies by 2. Equivalent to 1 lshift.
+
+2/
+  ( n -- n/2 )
+  Divides by 2. Arithmetic right shift, preserves sign.
+
+=
+  ( a b -- flag )
+  Returns -1 if a equals b, 0 otherwise.
+
+<>
+  ( a b -- flag )
+  Returns -1 if a does not equal b, 0 otherwise.
+
+<
+  ( a b -- flag )
+  Returns -1 if a is less than b, 0 otherwise.
+
+>
+  ( a b -- flag )
+  Returns -1 if a is greater than b, 0 otherwise.
+
+0=
+  ( n -- flag )
+  Returns -1 if n is zero, 0 otherwise.
+
+0<
+  ( n -- flag )
+  Returns -1 if n is negative, 0 otherwise.
+
+0>
+  ( n -- flag )
+  Returns -1 if n is positive (greater than zero), 0 otherwise.
+
+0<>
+  ( n -- flag )
+  Returns -1 if n is non-zero, 0 otherwise. Equivalent to 0= invert.
+
+u<
+  ( a b -- flag )
+  Unsigned less-than. Treats a and b as unsigned integers.
+
+u>
+  ( a b -- flag )
+  Unsigned greater-than. Treats a and b as unsigned integers.
+
+and
+  ( a b -- n )
+  Bitwise AND of a and b.
+
+or
+  ( a b -- n )
+  Bitwise OR of a and b.
+
+xor
+  ( a b -- n )
+  Bitwise XOR of a and b.
+
+invert
+  ( n -- ~n )
+  Bitwise NOT of n. Inverts all bits.
+
+not
+  ( n -- flag )
+  Logical NOT. Returns -1 if n is zero, 0 otherwise. Alias for 0=.
+
+lshift
+  ( n amt -- n )
+  Shifts n left by amt bits.
+
+rshift
+  ( n amt -- n )
+  Shifts n right by amt bits (logical, zero-fills from left).
+
+>r
+  ( n -- )
+  Moves top of data stack to return stack.
+
+r>
+  ( -- n )
+  Moves top of return stack to data stack.
+
+r@
+  ( -- n )
+  Copies the top of the return stack to the data stack without removing it.
+
+2>r
+  ( lo hi -- )
+  Moves a double-cell value to the return stack. Hi is on top.
+  Must be balanced with 2r> before the word exits.
+
+2r>
+  ( -- lo hi )
+  Moves a double-cell value from the return stack. Hi ends on top.
+
+2r@
+  ( -- lo hi )
+  Copies the top double-cell from the return stack without removing it.
+
+dup
+  ( n -- n n )
+  Duplicates the top of stack.
+
+?dup
+  ( n -- n n | 0 )
+  Duplicates the top of stack only if it is non-zero.
+  Useful to test and branch: ?dup if ... then
+
+drop
+  ( n -- )
+  Discards the top of stack.
+
+swap
+  ( a b -- b a )
+  Swaps the top two stack items.
+
+over
+  ( a b -- a b a )
+  Copies the second item to the top.
+
+rot
+  ( a b c -- b c a )
+  Rotates the third item to the top.
+
+nip
+  ( a b -- b )
+  Discards the second stack item.
+
+tuck
+  ( a b -- b a b )
+  Copies the top item below the second item.
+
+pick
+  ( xu...x0 u -- xu...x0 xu )
+  Copies the nth item from the top of stack (0-indexed).
+  0 pick is equivalent to dup, 1 pick to over.
+
+roll
+  ( xu...x0 u -- xu-1...x0 xu )
+  Removes the nth item and places it on top (0-indexed).
+  1 roll is equivalent to swap, 2 roll to rot.
+
+depth
+  ( -- n )
+  Pushes the number of items currently on the data stack.
+
+2dup
+  ( a b -- a b a b )
+  Duplicates the top pair.
+
+2drop
+  ( a b -- )
+  Discards the top pair.
+
+2swap
+  ( a b c d -- c d a b )
+  Swaps the top two pairs.
+
+2over
+  ( a b c d -- a b c d a b )
+  Copies the second pair to the top.
+
+2nip
+  ( a b c d -- c d )
+  Discards the second pair.
+
+within
+  ( n lo hi -- flag )
+  Returns -1 if lo <= n < hi, 0 otherwise.
+  Example: 3 1 5 within  => -1
+  Example: 5 1 5 within  => 0
+
+bounds
+  ( addr n -- addr+n addr )
+  Converts an address and count into a range for a DO loop.
+  Example: buf 4 bounds do i c@ . loop  \ prints 4 bytes
+
+.
+  ( n -- )
+  Prints top of stack in the current base, followed by a space.
+
+u.
+  ( u -- )
+  Prints top of stack as an unsigned integer in the current base.
+
+.r
+  ( n w -- )
+  Prints n right-justified in a field of width w (signed).
+  Example: -42 8 .r  =>        -42
+
+u.r
+  ( u w -- )
+  Prints u right-justified in a field of width w (unsigned).
+
+d.
+  ( lo hi -- )
+  Prints a double-cell signed integer. hi is on top.
+
+d.r
+  ( lo hi w -- )
+  Prints a double-cell signed integer right-justified in field of width w.
+
+emit
+  ( c -- )
+  Prints a character by its ASCII value.
+
+cr
+  ( -- )
+  Prints a newline.
+
+space
+  ( -- )
+  Prints a single space.
+
+spaces
+  ( n -- )
+  Prints n spaces.
+
+bl
+  ( -- 32 )
+  Pushes the ASCII code of a space (32).
+
+.s
+  ( -- )
+  Prints the entire stack contents without consuming them.
+
+type
+  ( idx -- )
+  Prints the string at the given string table index.
+
+s=
+  ( idx1 idx2 -- flag )
+  Returns -1 if the two strings are equal, 0 otherwise.
+
+s+
+  ( idx1 idx2 -- idx3 )
+  Concatenates two strings, returns index of the new string.
+
+s.s
+  ( -- )
+  Prints the entire string table with indices. Useful for debugging.
+
+s.clear
+  ( -- )
+  Clears the string table entirely.
+
+compare
+  ( addr1 n1 addr2 n2 -- -1|0|1 )
+  Compares two byte strings in the heap lexicographically.
+  Returns -1 if string1 < string2, 0 if equal, 1 if string1 > string2.
+
+count
+  ( addr -- addr+1 n )
+  Reads a counted string: addr[0] is the length byte.
+  Returns address of first character and byte count.
+
+accept
+  ( maxlen -- idx )
+  Reads a line of input, truncated to maxlen characters.
+  Returns the string table index of the input.
+
+key
+  ( -- c )
+  Reads a single keypress without echo. Returns ASCII value.
+
+evaluate
+  ( idx -- )
+  Executes the string at string table index idx as Forth source.
+  Example: s" 2 3 + ." evaluate
+
+base
+  ( -- addr )
+  Pushes the heap address of the BASE variable.
+  Store 10 for decimal, 16 for hex, etc.
+
+hex
+  ( -- )
+  Sets the numeric base to 16.
+
+decimal
+  ( -- )
+  Sets the numeric base to 10.
+
+octal
+  ( -- )
+  Sets the numeric base to 8.
+
+binary
+  ( -- )
+  Sets the numeric base to 2.
+
+<#
+  ( -- )
+  Begins a pictured numeric output sequence.
+  Use with # #s sign hold #> to format numbers as strings.
+  Example: 255 s>d <# #s #> type cr   => 255
+  Example: hex  255 s>d <# #s #> type decimal cr   => ff
+
+#
+  ( ud_lo ud_hi -- ud_lo' ud_hi' )
+  Extracts one digit from the double-cell number into the picture buffer.
+  Uses the current base.
+
+#s
+  ( ud_lo ud_hi -- 0 0 )
+  Extracts all remaining digits into the picture buffer.
+
+sign
+  ( n -- )
+  Prepends a minus sign to the picture buffer if n is negative.
+  Typically used with the original signed value before conversion.
+
+hold
+  ( char -- )
+  Inserts a character into the picture buffer.
+
+holds
+  ( idx -- )
+  Inserts a string (by string table index) into the picture buffer.
+
+#>
+  ( ud_lo ud_hi -- idx n )
+  Ends pictured numeric output. Returns string index and length.
+  The index can be passed to TYPE, the length is the character count.
+
+@
+  ( addr -- n )
+  Fetches the integer value at byte address addr.
+
+!
+  ( n addr -- )
+  Stores integer n at byte address addr.
+
+c@
+  ( addr -- n )
+  Fetches a single byte from byte address addr.
+
+c!
+  ( n addr -- )
+  Stores the low byte of n at byte address addr.
+
+2@
+  ( addr -- lo hi )
+  Fetches a double-cell value. lo from addr, hi from addr+cell.
+
+2!
+  ( lo hi addr -- )
+  Stores a double-cell value. lo at addr, hi at addr+cell.
+
+cell
+  ( -- n )
+  Pushes the size of one cell in bytes (4 on this platform).
+
+cell+
+  ( addr -- addr+cell )
+  Adds one cell size to an address.
+
+cells
+  ( n -- n*cell )
+  Converts a cell count to a byte count.
+
+char+
+  ( addr -- addr+1 )
+  Adds 1 to an address (advances by one character/byte).
+
+chars
+  ( n -- n )
+  Identity: character count equals byte count on this platform.
+
+,
+  ( n -- )
+  Appends one cell to the heap at HERE.
+
+c,
+  ( n -- )
+  Appends a single byte to the heap at HERE.
+
+here
+  ( -- addr )
+  Pushes the byte address of the next free heap location.
+
+allot
+  ( n -- )
+  Reserves n bytes on the heap, advancing HERE by n.
+
+fill
+  ( addr len val -- )
+  Fills len bytes starting at addr with the low byte of val.
+
+erase
+  ( addr n -- )
+  Fills n bytes starting at addr with zeros.
+
+blank
+  ( addr n -- )
+  Fills n bytes starting at addr with spaces (ASCII 32).
+
+move
+  ( src dst n -- )
+  Copies n bytes from src to dst. Handles overlapping regions correctly.
+
+cmove
+  ( src dst n -- )
+  Copies n bytes from src to dst, proceeding low-to-high address.
+
+cmove>
+  ( src dst n -- )
+  Copies n bytes from src to dst, proceeding high-to-low address.
+  Use when source and destination overlap and dst > src.
+
+dump
+  ( addr len -- )
+  Prints len bytes starting at addr as decimal values.
+
+pad
+  ( -- addr )
+  Pushes address of the scratch pad area (84 bytes above system area).
+  Suitable for temporary string construction.
+
+unused
+  ( -- n )
+  Returns an estimate of available heap space in bytes.
+
+sp@
+  ( -- n )
+  Pushes the current data stack depth (stack pointer value).
+
+sp!
+  ( n -- )
+  Sets the data stack depth to n. Use with caution.
+
+s>d
+  ( n -- lo hi )
+  Sign-extends a single cell to a double cell.
+  hi is -1 if n is negative, 0 otherwise.
+
+d>s
+  ( lo hi -- n )
+  Takes the low cell of a double, discards the high cell.
+
+um*
+  ( u1 u2 -- ud_lo ud_hi )
+  Unsigned 32x32 multiply producing a 64-bit result.
+
+um/mod
+  ( ud_lo ud_hi u -- rem quot )
+  Divides unsigned 64-bit ud by unsigned u.
+  Leaves remainder and quotient.
+
+sm/rem
+  ( d_lo d_hi n -- rem quot )
+  Symmetric (truncated) signed 64-bit divided by 32-bit.
+  Remainder has same sign as dividend.
+
+fm/mod
+  ( d_lo d_hi n -- rem quot )
+  Floored signed 64-bit divided by 32-bit.
+  Remainder has same sign as divisor.
+
+d+
+  ( lo1 hi1 lo2 hi2 -- lo3 hi3 )
+  Adds two double-cell integers.
+
+d-
+  ( lo1 hi1 lo2 hi2 -- lo3 hi3 )
+  Subtracts second double from first.
+
+dnegate
+  ( lo hi -- lo' hi' )
+  Negates a double-cell integer.
+
+dabs
+  ( lo hi -- lo' hi' )
+  Returns the absolute value of a double-cell integer.
+
+d=
+  ( lo1 hi1 lo2 hi2 -- flag )
+  Returns -1 if the two doubles are equal, 0 otherwise.
+
+d<
+  ( lo1 hi1 lo2 hi2 -- flag )
+  Signed double less-than. Returns -1 if first double < second.
+
+du<
+  ( ulo1 uhi1 ulo2 uhi2 -- flag )
+  Unsigned double less-than.
+
+dmax
+  ( lo1 hi1 lo2 hi2 -- lo hi )
+  Returns the larger of two double-cell signed integers.
+
+dmin
+  ( lo1 hi1 lo2 hi2 -- lo hi )
+  Returns the smaller of two double-cell signed integers.
+
+d2*
+  ( lo hi -- lo' hi' )
+  Multiplies a double-cell integer by 2.
+
+d2/
+  ( lo hi -- lo' hi' )
+  Divides a double-cell integer by 2 (arithmetic shift right).
+
+m+
+  ( lo hi n -- lo' hi' )
+  Adds a single-cell signed integer to a double-cell integer.
+
+i
+  ( -- n )
+  Pushes the current loop index. Only valid inside a DO loop.
+
+j
+  ( -- n )
+  Pushes the outer loop index. Only valid inside a nested DO loop.
+
+unloop
+  ( -- )
+  Discards the current loop's index and limit from the return stack.
+  Required before EXIT inside a DO loop.
+
+compile,
+  ( xt -- )
+  Compiles a call to the word identified by execution token xt.
+  Used in words that build other words at runtime.
+
+postpone
+  ( "name" -- )
+  Compiles the compilation semantics of name into the current definition.
+  For immediate words: compiles a call that runs at compile time.
+  For non-immediate words: compiles code to compile a call to name.
+
+execute
+  ( xt -- )
+  Executes the word identified by execution token xt.
+
+immediate
+  ( -- )
+  Marks the most recently defined word as immediate.
+
+literal
+  ( n -- )
+  Compiles n (popped from stack at compile time) as a literal.
+  Only valid inside a definition.
+  Example: : five [ 2 3 + ] literal ;
+
+>body
+  ( xt -- addr )
+  Given an execution token of a CREATE word, returns its body address.
+  Used by TO to update VALUE words.
+  Example: ' myval >body @  fetches myval's stored value directly
+
+body>
+  ( addr -- xt )
+  Given a body address, returns the execution token of the CREATE word.
+  Inverse of >body.
+
+[
+  ( -- )
+  Switches to interpret mode inside a definition.
+  Used to compute constants at compile time.
+  Example: : x [ 2 3 + ] literal ;  compiles 5 as a literal
+
+]
+  ( -- )
+  Switches back to compile mode. Used after [.
+
+words
+  ( -- )
+  Prints all known words in the dictionary.
+
+'
+  ( "name" -- xt )
+  Pushes the execution token of the named word.
+  Example: ' dup execute  is the same as dup
+
+[']
+  ( "name" -- xt )
+  Compile-time tick. Compiles the xt of the named word as a literal.
+  Only valid inside a definition.
+  Example: : run-dup ['] dup execute ;
+
+catch
+  ( xt -- 0 | idx -1 )
+  Executes xt. If it completes normally, leaves 0.
+  If it throws, restores the stack and leaves a string index of the
+  error message and -1.
+  Example: ' risky-word catch  dup if type cr else drop then
+
+throw
+  ( n -- )
+  If n is 0, does nothing. If n is -1, pops a string index from the
+  stack and throws that string as an error. For any other n, throws
+  a generic error with the number.
+  Example: s" bad value" -1 throw
+
+abort
+  ( -- )
+  Throws an "abort" exception, unwinding to the nearest CATCH or REPL.
+
+abort"
+  ( flag "message" -- )
+  If flag is non-zero, throws an exception with the given message.
+  Only valid inside a definition (or interpret mode for immediate effect).
+  Example: depth 0= abort" stack is empty!"
+
+noop
+  ( -- )
+  Does nothing. Used as a placeholder, especially with DEFER.
+
+catch
+  ( xt -- 0 | idx -1 )
+  Executes the word with execution token xt.
+  On success: leaves 0. On exception: leaves string-idx -1.
+
+value
+  ( n "name" -- )
+  Creates a named constant that can be updated with TO.
+  Reading the value just pushes it (no @ needed).
+  Example: 42 value answer    answer .   => 42
+  Example: 99 to answer       answer .   => 99
+
+to
+  ( n "name" -- )
+  Updates the storage of a VALUE word.
+  Example: 100 to myval
+
+defer
+  ( "name" -- )
+  Creates a deferred word whose behaviour is set with IS.
+  Initially executes NOOP. Use IS to assign an action.
+  Example: defer greet
+  Example: : say-hi ." Hello!" cr ;
+  Example: ' say-hi is greet
+  Example: greet    => Hello!
+
+is
+  ( xt "name" -- )
+  Sets the action of a DEFER word to the word with execution token xt.
+  Works in both interpret and compile mode.
+  Example: ' my-word is my-deferred-word
+
+marker
+  ( "name" -- )
+  Creates a word that, when executed, forgets itself and all words
+  defined after the marker was created. Also restores HERE.
+  Example: marker checkpoint
+  Example: : temp-word 42 ;
+  Example: checkpoint    \ temp-word is now forgotten
+
+variable
+  ( "name" -- )
+  Creates a variable initialised to 0. The word pushes its address.
+  Use @ to fetch, ! to store.
+  Example: variable counter
+  Example: 100 counter !
+  Example: counter @ .  => 100
+
+constant
+  ( n "name" -- )
+  Creates a named constant. Invoking the word pushes n.
+  Example: 3 constant three    three .   => 3
+
+:
+  ( -- )
+  Syntax: : name ... ;
+  Begins a word definition.
+
+;
+  ( -- )
+  Ends a word definition and stores it in the dictionary.
+
+create
+  ( "name" -- )
+  Creates a new dictionary entry whose body is the current HERE.
+  When invoked, pushes its body address.
+
+does>
+  ( -- )
+  Splits a defining word into build and run phases.
+
+if
+  ( flag -- )
+  Begins a conditional. If flag is 0, skips to ELSE or THEN.
+
+else
+  ( -- )
+  Separates true and false branches of IF...THEN.
+
+then
+  ( -- )
+  Closes an IF or IF...ELSE block.
+
+endif
+  ( -- )
+  Alias for THEN.
+
+case
+  ( n -- n )
+  Begins a CASE...ENDCASE statement. Leaves n on stack for OF tests.
+  Example: n case
+  Example:   1 of ." one" endof
+  Example:   2 of ." two" endof
+  Example:   ." other"
+  Example: endcase
+
+of
+  ( n val -- n | )
+  Tests if n equals val. If so, consumes n and enters the OF body.
+  If not, leaves n on the stack and skips to ENDOF.
+
+endof
+  ( -- )
+  Closes an OF body and branches to ENDCASE.
+
+endcase
+  ( n -- )
+  Closes a CASE statement. Drops the test value.
+
+do
+  ( limit start -- )
+  Begins a counted loop from start to limit-1.
+  Pushes limit and start onto the return stack.
+  Example: 5 0 do i . loop   => 0 1 2 3 4
+
+?do
+  ( limit start -- )
+  Like DO, but skips the loop entirely if limit equals start.
+  Example: 5 5 ?do i . loop  => (nothing)
+  Example: 5 3 ?do i . loop  => 3 4
+
+loop
+  ( -- )
+  Increments loop index by 1 and jumps back to DO if index < limit.
+
++loop
+  ( n -- )
+  Increments loop index by n and jumps back to DO if not past limit.
+
+leave
+  ( -- )
+  Immediately exits the enclosing DO loop.
+
+begin
+  ( -- )
+  Marks the start of a BEGIN loop.
+
+until
+  ( flag -- )
+  Jumps back to BEGIN if flag is 0. Exits if non-zero.
+
+while
+  ( flag -- )
+  If flag is 0, exits a BEGIN...WHILE...REPEAT loop.
+
+repeat
+  ( -- )
+  Unconditionally jumps back to BEGIN in a BEGIN...WHILE...REPEAT loop.
+
+again
+  ( -- )
+  Unconditionally jumps back to BEGIN (infinite loop).
+
+recurse
+  ( -- )
+  Compiles a call to the word currently being defined.
+
+exit
+  ( -- )
+  Returns immediately from the current word.
+  If inside a DO loop, UNLOOP first.
+
+{
+  ( ... -- )
+  Syntax: { a b c -- result }
+  Declares local variables. Values are popped in reverse order.
+  Example: : add3  { a b c -- }  a b + c + ;
+
+->
+  ( n -- )
+  Stores top of stack into a named local variable.
+  Example: : test  { x -- }  x 2 * -> x  x . ;
+
+char
+  ( "c" -- n )
+  Pushes ASCII value of the first character of the next word.
+  Example: char A .   => 65
+
+[char]
+  ( "c" -- n )
+  Compiles the ASCII value of a character as a literal.
+
+s"
+  ( "text" -- idx )
+  Pushes a string onto the string table and leaves its index.
+
+."
+  ( "text" -- )
+  Prints a string literal.
+
+.(
+  ( "text)" -- )
+  Prints a string literal delimited by parentheses.
+
+\
+  ( -- )
+  Line comment. Ignores everything to the end of the line.
+
+(
+  ( -- )
+  Block comment. Ignores everything until the closing ).
+
+see
+  ( "name" -- )
+  Decompiles and prints the bytecode of a word.
+
+include
+  ( "filename" -- )
+  Loads and evaluates a Forth source file.
+
+edit
+  ( "filename" -- )
+  Opens a file in $EDITOR (falls back to vi).
+
+help
+  ( -- )
+  Syntax: help <word>
+  Displays help for a word. Bare HELP lists all documented words.
+
+help-set
+  ( name-idx body-idx -- )
+  Stores a help entry programmatically.
+  Example: s" myword" s" ( n -- ) Does something." help-set
+
+at-xy
+  ( col row -- )
+  Moves the terminal cursor to the given column and row (0-indexed).
+
+state
+  ( -- addr )
+  Pushes the address of the STATE variable (1=compile, 0=interpret).
+
+bye
+  ( -- )
+  Exits the interpreter.
+
+true
+  ( -- -1 )
+  Pushes -1 (the canonical true flag).
+
+false
+  ( -- 0 )
+  Pushes 0 (the canonical false flag).
+
+variable
+  ( -- )
+  Creates a new variable initialised to 0.
+  Example: variable x   10 x !   x @ .
+
+array
+  ( n "name" -- )
+  Allocates an array of n cells. The word pushes the base address.
+  Use arr@ to get the address of an element by index.
+  Example: 10 array buf
+  Example: 42 3 buf arr@ !    \ store 42 at index 3
+
+arr@
+  ( idx addr -- elem-addr )
+  Returns the address of element idx in an array at addr.
+  Example: 0 buf arr@ @   \ fetch element 0
+
+print-array
+  ( addr len -- )
+  Prints len cells starting at addr, space-separated.
+
+between
+  ( n lo hi -- flag )
+  Returns -1 if lo <= n <= hi, 0 otherwise. (Inclusive on both ends.)
+
+?
+  ( addr -- )
+  Fetches and prints the integer at addr.
+  Shorthand for @ .
+
++!
+  ( n addr -- )
+  Adds n to the cell at addr. Equivalent to dup @ rot + swap !
+
+2+
+  ( n -- n+2 )
+  Adds 2.
+
+2-
+  ( n -- n-2 )
+  Subtracts 2.
+
++chars
+  ( addr n -- addr' )
+  Advances addr by n characters (bytes).
+
+.bin
+  ( n -- )
+  Prints n in binary, then restores the previous base.
+
+.oct
+  ( n -- )
+  Prints n in octal, then restores the previous base.
+
+.dec
+  ( n -- )
+  Prints n in decimal, then restores the previous base.
+
+.hex
+  ( n -- )
+  Prints n in hexadecimal, then restores the previous base.
+
+.nums
+  ( addr n -- )
+  Prints n integers starting at addr.
+
+.cr
+  ( n -- )
+  Prints n followed by a newline.
+
+<=
+  ( a b -- flag )
+  Returns -1 if a <= b, 0 otherwise.
+
+>=
+  ( a b -- flag )
+  Returns -1 if a >= b, 0 otherwise.
+
+sort
+  ( addr n -- )
+  Sorts n cells starting at addr in ascending order.
+
+info
+  ( -- )
+  BadgerForth -- a lightweight single-file Forth interpreter in C++.
+  Architecture:
+    Compiles to compact 24-byte bytecode instructions (Op enum).
+    Each Ins holds: opcode, integer field, pointer, and string index.
+    String data lives in a parallel side-table (Code::sv), keeping
+    the hot instruction stream cache-dense.
+    Dispatch uses an iterative interpreter with an explicit call stack
+    (no C++ recursion), and an array-backed data and return stack.
+    Hot opcodes (+, -, dup, swap, @, ! etc.) are handled inline in
+    the dispatch loop without function calls.
+  Memory model:
+    A byte vector (heap) serves as the address space.
+    Cell size is 4 bytes. BASE is at heap[0], STATE at heap[4].
+    HERE and ALLOT operate on byte addresses.
+  String model:
+    Strings live in a separate string_table vector.
+    Words operate on integer indices into this table.
+    s" pushes an index; type prints by index; s+ concatenates.
+  Dictionary:
+    Words stored in a deque<Entry> for pointer stability.
+    A name->index hash map gives O(1) lookup.
+    Four entry kinds: PRIM, WORD, DEFINING, CREATE.
+    Each entry has a unique integer execution token (xt).
+  Double-cell:
+    64-bit values represented as (lo hi) pairs on the stack.
+    Full set of ANS double-cell words: d+, d-, dnegate, dabs,
+    d=, d<, du<, dmax, dmin, d2*, d2/, m+, s>d, d>s,
+    um*, um/mod, sm/rem, fm/mod.
+  Pictured numeric output:
+    <# # #s sign hold holds #> produce formatted number strings.
+  Exception handling:
+    catch/throw provide structured exception handling.
+    abort" throws when a flag is non-zero.
+  Locals:
+    { a b c -- } syntax inside definitions.
+    -> stores into a named local.
+  Marker:
+    marker saves a dictionary snapshot; executing it forgets
+    everything defined after the marker was created.
+  Control flow:
+    if/else/then, begin/until, begin/while/repeat, begin/again,
+    do/loop/+loop, ?do, leave, exit, recurse,
+    case/of/endof/endcase.
+
+quit
+  ( -- )
+  Throws a "quit" exception, returning control to the REPL.
+  Useful for exiting nested include files or evaluation.
+
+throw-str
+  ( idx -- )
+  Internal helper used by ABORT". Throws using the string at idx.
+  Equivalent to: -1 throw  with idx already on the stack.
+  Not normally called directly.
+
